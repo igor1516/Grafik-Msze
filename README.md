@@ -4,23 +4,23 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![PWA](https://img.shields.io/badge/PWA-enabled-orange.svg)
 
-Aplikacja webowa do rejestrowania i rozliczania mszy świętych. Działa jako **Progressive Web App** - można zainstalować na telefonie i używać **całkowicie offline** bez dostępu do internetu.
+Aplikacja webowa do generowania dziennika pracy organisty. Działa jako **Progressive Web App** - można zainstalować na telefonie i używać **całkowicie offline** bez dostępu do internetu.
 
 ## Główne funkcje
 
-**Automatyczne generowanie kalendarza** - tworzy harmonogram mszy na cały miesiąc
-**Domyślne godziny mszy** - oddzielne ustawienia dla dni powszednich, sobót i niedziel
-**Rozpoznawanie świąt** - automatycznie wykrywa święta państwowe i kościelne (w tym ruchome święta wielkanocne)
-**Wpisy niestandardowe** - możliwość dodania jednorazowych mszy w wybranym dniu
-**Edycja wpisów** - zmiana godzin, dodawanie i usuwanie mszy
-**Rozliczenie finansowe** - automatyczne obliczanie wynagrodzenia
-**Eksport do pliku** - generowanie raportu tekstowego z podsumowaniem
-**Praca offline** - pełna funkcjonalność bez internetu po zainstalowaniu
-**Synchronizacja danych** - dane zapisywane lokalnie w pamięci urządzenia
+- Automatyczne generowanie kalendarza - tworzy harmonogram mszy na cały miesiąc
+- Domyślne godziny mszy - oddzielne ustawienia dla dni powszednich, sobót i niedziel
+- Rozpoznawanie świąt - automatycznie wykrywa święta państwowe i kościelne (w tym ruchome święta wielkanocne)
+- Wpisy niestandardowe - możliwość dodania jednorazowych mszy w wybranym dniu
+- Edycja wpisów - zmiana godzin, dodawanie i usuwanie mszy
+- Rozliczenie finansowe - automatyczne obliczanie wynagrodzenia
+- Eksport do pliku - generowanie raportu tekstowego z podsumowaniem
+- Praca offline - pełna funkcjonalność bez internetu po zainstalowaniu
+- Synchronizacja danych - dane zapisywane lokalnie w pamięci urządzenia
 
 ## Demo
 
-[**Otwórz aplikację**](https://igor1516.github.io/Grafik-Mszy/)
+[**Otwórz aplikację**](https://igor1516.github.io/Grafik-Msze/)
 
 ## Instalacja
 
@@ -54,7 +54,7 @@ Aplikacja webowa do rejestrowania i rozliczania mszy świętych. Działa jako **
 #### Lokalnie
 1. Sklonuj repozytorium:
 ```bash
-git clone https://github.com/igor1516/Grafik-Mszy.git
+git clone https://github.com/igor1516/Grafik-Msze.git
 cd rejestr-mszy
 ```
 
@@ -115,20 +115,20 @@ php -S localhost:8000
 
 ## Prywatność i bezpieczeństwo
 
-**100% prywatności** - wszystkie dane przechowywane lokalnie na Twoim urządzeniu
-**Brak śledzenia** - zero analytics, zero cookies, zero zewnętrznych połączeń
-**Brak rejestracji** - nie wymaga konta ani logowania
-**Brak serwera** - aplikacja działa wyłącznie w przeglądarce
-**Pełna kontrola** - możesz w każdej chwili usunąć dane z localStorage
+- 100% prywatności - wszystkie dane przechowywane lokalnie na Twoim urządzeniu
+- Brak śledzenia - zero analytics, zero cookies, zero zewnętrznych połączeń
+- Brak rejestracji - nie wymaga konta ani logowania
+- Brak serwera - aplikacja działa wyłącznie w przeglądarce
+- Pełna kontrola - możesz w każdej chwili usunąć dane z localStorage
 
 ## Technologie
 
-**HTML5** - struktura aplikacji
-**CSS3** - stylowanie i responsywność
-**Vanilla JavaScript** - logika aplikacji (bez frameworków)
-**PWA** - Progressive Web App z Service Worker
-**LocalStorage API** - przechowywanie danych lokalnie
-**Cache API** - praca offline
+- HTML5 - struktura aplikacji
+- CSS3 - stylowanie i responsywność
+- Vanilla JavaScript - logika aplikacji (bez frameworków)
+- PWA** - Progressive Web App z Service Worker
+- LocalStorage API** - przechowywanie danych lokalnie
+- Cache API** - praca offline
 
 ## Struktura projektu
 ```
@@ -142,14 +142,14 @@ rejestr-mszy/
 ```
 
 ## Znane problemy
-**iOS Safari**: Banner instalacji nie pojawia się automatycznie (użyj "Dodaj do ekranu początkowego")
-**Firefox**: Ograniczone wsparcie dla PWA na Androidzie
+- miOS Safari: Banner instalacji nie pojawia się automatycznie (użyj "Dodaj do ekranu początkowego")
+- Firefox: Ograniczone wsparcie dla PWA na Androidzie
 
 ### Zgłaszanie błędów
-Znalazłeś błąd? [Utwórz issue](https://github.com/igor1516/Grafik-Mszy/issues)
+Znalazłeś błąd? [Utwórz issue](https://github.com/igor1516/Grafik-Msze/issues)
 
 ### Propozycje funkcji
-Masz pomysł na nową funkcję? [Otwórz issue z tagiem "enhancement"](https://github.com/igor1516/Grafik-Mszy/issues)
+Masz pomysł na nową funkcję? [Otwórz issue z tagiem "enhancement"](https://github.com/igor1516/Grafik-Msze/issues)
 
 ### v1.0.0 (2025-01-16)
 1. Pierwsza wersja publiczna
@@ -172,6 +172,7 @@ Igor Zagórski
 
 Dziękujemy wszystkim użytkownikom za feedback i sugestie!
 ```
+
 
 
 
