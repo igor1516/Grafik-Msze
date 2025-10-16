@@ -10,7 +10,7 @@ Aplikacja webowa do generowania dziennika pracy organisty. Działa jako **Progre
 
 - Automatyczne generowanie kalendarza - tworzy harmonogram mszy na cały miesiąc
 - Domyślne godziny mszy - oddzielne ustawienia dla dni powszednich, sobót i niedziel
-- Rozpoznawanie świąt - automatycznie wykrywa święta państwowe i kościelne (w tym ruchome święta wielkanocne)
+- Rozpoznawanie świąt - automatycznie wykrywa święta kościelne (w tym ruchome święta wielkanocne)
 - Wpisy niestandardowe - możliwość dodania jednorazowych mszy w wybranym dniu
 - Edycja wpisów - zmiana godzin, dodawanie i usuwanie mszy
 - Podsumowanie miesiąca - automatyczne zliczanie mszy i generowanie statystyk
@@ -172,6 +172,7 @@ Igor Zagórski
 
 Dziękujemy wszystkim użytkownikom za feedback i sugestie!
 ```
+
 
 
 
