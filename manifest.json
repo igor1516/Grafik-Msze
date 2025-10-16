@@ -1,6 +1,5 @@
 {
-  "name": "Rejestr Zagranych Mszy",
-  "short_name": "Rejestr Mszy",
+  "name": "Grafik Mszy",
   "description": "Kalendarz i rozliczenie zagranych mszy - działa offline",
   "start_url": ".",
   "display": "standalone",
@@ -25,3 +24,4 @@
   "dir": "ltr"
 
 }
+
