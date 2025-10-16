@@ -90,7 +90,7 @@ php -S localhost:8000
 ## Instrukcja użytkowania
 
 ### 1. Pierwsze uruchomienie
-- Ustaw wynagrodzenie za mszę w polu "Wynagrodzenie za mszę (zł)"
+- Ustaw wynagrodzenie w polu "Stawka za mszę (zł)"
 - Kliknij "Ustaw domyślne godziny mszy"
 - Dodaj typowe godziny mszy dla dni powszednich, sobót i niedziel
 
@@ -172,6 +172,7 @@ Igor Zagórski
 
 Dziękujemy wszystkim użytkownikom za feedback i sugestie!
 ```
+
 
 
 
