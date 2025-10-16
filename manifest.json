@@ -1,6 +1,6 @@
 {
   "name": "Grafik Mszy",
-  "description": "Kalendarz i rozliczenie zagranych mszy - działa offline",
+  "description": "Dziennik pracy organisty - działa offline",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",
