@@ -162,7 +162,7 @@ Masz pomysł na nową funkcję? [Otwórz issue z tagiem "enhancement"](https://g
 
 ## Licencja
 
-Ten projekt jest udostępniony na licencji MIT - szczegóły w pliku [LICENSE](LICENSE)
+Ten projekt jest udostępniony na licencji MIT - szczegóły w pliku [LICENSE]
 
 ## Autor
 
@@ -172,6 +172,7 @@ Igor Zagórski
 
 Dziękujemy wszystkim użytkownikom za feedback i sugestie!
 ```
+
 
 
 
