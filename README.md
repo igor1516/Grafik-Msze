@@ -115,11 +115,11 @@ php -S localhost:8000
 
 ## Prywatność i bezpieczeństwo
 
--**100% prywatności** - wszystkie dane przechowywane lokalnie na Twoim urządzeniu
--**Brak śledzenia** - zero analytics, zero cookies, zero zewnętrznych połączeń
--**Brak rejestracji** - nie wymaga konta ani logowania
--**Brak serwera** - aplikacja działa wyłącznie w przeglądarce
--**Pełna kontrola** - możesz w każdej chwili usunąć dane z localStorage
+**100% prywatności** - wszystkie dane przechowywane lokalnie na Twoim urządzeniu
+**Brak śledzenia** - zero analytics, zero cookies, zero zewnętrznych połączeń
+**Brak rejestracji** - nie wymaga konta ani logowania
+**Brak serwera** - aplikacja działa wyłącznie w przeglądarce
+**Pełna kontrola** - możesz w każdej chwili usunąć dane z localStorage
 
 ## Technologie
 
@@ -169,9 +169,10 @@ Ten projekt jest udostępniony na licencji MIT - szczegóły w pliku [LICENSE](L
 Igor Zagórski
 Projekt stworzony jako narzędzie wspierające pracę duszpasterską.
 
-## 🙏 Podziękowania
+## Podziękowania
 
 Dziękujemy wszystkim użytkownikom za feedback i sugestie!
 ```
+
 
 
