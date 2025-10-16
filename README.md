@@ -4,7 +4,7 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![PWA](https://img.shields.io/badge/PWA-enabled-orange.svg)
 
-Aplikacja webowa do generowania dziennika pracy organisty. Działa jako **Progressive Web App** - można zainstalować na telefonie i używać **całkowicie offline** bez dostępu do internetu.
+Aplikacja webowa do generowania dziennika pracy organisty. Działa jako **Progressive Web App** - można zainstalować na telefonie i używać bez dostępu do internetu.
 
 ## Główne funkcje
 
@@ -172,6 +172,7 @@ Igor Zagórski
 
 Dziękujemy wszystkim użytkownikom za feedback i sugestie!
 ```
+
 
 
 
