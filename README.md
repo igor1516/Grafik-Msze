@@ -20,7 +20,7 @@ Aplikacja webowa do rejestrowania i rozliczania odprawionych mszy świętych. Dz
 
 ## Demo
 
-[**Otwórz aplikację**](https://github.com/igor1516/Grafik-Mszy.git)
+[**Otwórz aplikację**](https://igor1516.github.io/Grafik-Mszy/)
 
 ## Instalacja
 
@@ -173,4 +173,5 @@ Projekt stworzony jako narzędzie wspierające pracę duszpasterską.
 
 Dziękujemy wszystkim użytkownikom za feedback i sugestie!
 ```
+
 
