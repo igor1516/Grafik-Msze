@@ -8,15 +8,15 @@ Aplikacja webowa do rejestrowania i rozliczania odprawionych mszy świętych. Dz
 
 ## Główne funkcje
 
--**Automatyczne generowanie kalendarza** - tworzy harmonogram mszy na cały miesiąc
--**Domyślne godziny mszy** - oddzielne ustawienia dla dni powszednich, sobót i niedziel
--**Rozpoznawanie świąt** - automatycznie wykrywa święta państwowe i kościelne (w tym ruchome święta wielkanocne)
--**Wpisy niestandardowe** - możliwość dodania jednorazowych mszy w wybranym dniu
--**Edycja wpisów** - zmiana godzin, dodawanie i usuwanie mszy
--**Rozliczenie finansowe** - automatyczne obliczanie wynagrodzenia
--**Eksport do pliku** - generowanie raportu tekstowego z podsumowaniem
--**Praca offline** - pełna funkcjonalność bez internetu po zainstalowaniu
--**Synchronizacja danych** - dane zapisywane lokalnie w pamięci urządzenia
+**Automatyczne generowanie kalendarza** - tworzy harmonogram mszy na cały miesiąc
+**Domyślne godziny mszy** - oddzielne ustawienia dla dni powszednich, sobót i niedziel
+**Rozpoznawanie świąt** - automatycznie wykrywa święta państwowe i kościelne (w tym ruchome święta wielkanocne)
+**Wpisy niestandardowe** - możliwość dodania jednorazowych mszy w wybranym dniu
+**Edycja wpisów** - zmiana godzin, dodawanie i usuwanie mszy
+**Rozliczenie finansowe** - automatyczne obliczanie wynagrodzenia
+**Eksport do pliku** - generowanie raportu tekstowego z podsumowaniem
+**Praca offline** - pełna funkcjonalność bez internetu po zainstalowaniu
+**Synchronizacja danych** - dane zapisywane lokalnie w pamięci urządzenia
 
 ## Demo
 
@@ -123,12 +123,12 @@ php -S localhost:8000
 
 ## Technologie
 
-- **HTML5** - struktura aplikacji
-- **CSS3** - stylowanie i responsywność
-- **Vanilla JavaScript** - logika aplikacji (bez frameworków)
-- **PWA** - Progressive Web App z Service Worker
-- **LocalStorage API** - przechowywanie danych lokalnie
-- **Cache API** - praca offline
+**HTML5** - struktura aplikacji
+**CSS3** - stylowanie i responsywność
+**Vanilla JavaScript** - logika aplikacji (bez frameworków)
+**PWA** - Progressive Web App z Service Worker
+**LocalStorage API** - przechowywanie danych lokalnie
+**Cache API** - praca offline
 
 ## Struktura projektu
 ```
@@ -142,9 +142,8 @@ rejestr-mszy/
 ```
 
 ## Znane problemy
-
-- **iOS Safari**: Banner instalacji nie pojawia się automatycznie (użyj "Dodaj do ekranu początkowego")
-- **Firefox**: Ograniczone wsparcie dla PWA na Androidzie
+**iOS Safari**: Banner instalacji nie pojawia się automatycznie (użyj "Dodaj do ekranu początkowego")
+**Firefox**: Ograniczone wsparcie dla PWA na Androidzie
 
 ### Zgłaszanie błędów
 Znalazłeś błąd? [Utwórz issue](https://github.com/igor1516/Grafik-Mszy/issues)
@@ -153,13 +152,13 @@ Znalazłeś błąd? [Utwórz issue](https://github.com/igor1516/Grafik-Mszy/issu
 Masz pomysł na nową funkcję? [Otwórz issue z tagiem "enhancement"](https://github.com/igor1516/Grafik-Mszy/issues)
 
 ### v1.0.0 (2025-01-16)
--Pierwsza wersja publiczna
--Generowanie kalendarza mszy
--Obsługa świąt polskich i ruchomych świąt kościelnych
--Wpisy niestandardowe
--Eksport do pliku tekstowego
--Pełne wsparcie PWA i pracy offline
--Responsywny interfejs
+1. Pierwsza wersja publiczna
+2. Generowanie kalendarza mszy
+3. Obsługa świąt polskich i ruchomych świąt kościelnych
+4. Wpisy niestandardowe
+5. Eksport do pliku tekstowego
+6. Pełne wsparcie PWA i pracy offline
+7. Responsywny interfejs
 
 ## Licencja
 
@@ -173,6 +172,5 @@ Projekt stworzony jako narzędzie wspierające pracę duszpasterską.
 ## 🙏 Podziękowania
 
 Dziękujemy wszystkim użytkownikom za feedback i sugestie!
-
-[![Gwiazdka](https://img.shields.io/github/stars/igor1516/Grafik-Mszy?style=social)](https://github.com/igor1516/Grafik-Mszy)
 ```
+
