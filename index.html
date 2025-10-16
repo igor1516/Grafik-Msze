@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rejestr Zagranych Mszy</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#9333ea">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Rejestr Mszy">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%239333ea' rx='20'/><text y='.9em' x='50%' font-size='70' text-anchor='middle' fill='white'>📅</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(to bottom right, #faf5ff, #dbeafe);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 56rem;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .install-banner {
+            background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .install-banner.show {
+            display: flex;
+        }
+
+        .install-banner-text {
+            flex: 1;
+        }
+
+        .install-banner-title {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .install-banner-desc {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        h1 {
+            font-size: 1.875rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .subtitle {
+            color: #4b5563;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            background: #faf5ff;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        input[type="number"],
+        input[type="time"],
+        input[type="month"],
+        input[type="date"] {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        input[type="number"]:focus,
+        input[type="time"]:focus,
+        input[type="month"]:focus,
+        input[type="date"]:focus {
+            outline: none;
+            border-color: transparent;
+            box-shadow: 0 0 0 2px #a78bfa;
+        }
+
+        button {
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-blue {
+            background: #2563eb;
+            color: white;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .btn-blue:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-purple {
+            background: #9333ea;
+            color: white;
+        }
+
+        .btn-purple:hover {
+            background: #7e22ce;
+        }
+
+        .btn-green {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-green:hover {
+            background: #15803d;
+        }
+
+        .btn-red {
+            background: #dc2626;
+            color: white;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .btn-red:hover {
+            background: #b91c1c;
+        }
+
+        .btn-gray {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-gray:hover {
+            background: #4b5563;
+        }
+
+        .btn-orange {
+            background: #ea580c;
+            color: white;
+        }
+
+        .btn-orange:hover {
+            background: #c2410c;
+        }
+
+        .btn-white {
+            background: white;
+            color: #9333ea;
+            border: 2px solid white;
+        }
+
+        .btn-white:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .settings-panel {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-section {
+            margin-bottom: 1rem;
+        }
+
+        .settings-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .settings-section label {
+            margin-bottom: 0.5rem;
+        }
+
+        .time-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .time-input-group input {
+            flex: 1;
+        }
+
+        .time-input-group button {
+            padding: 0.5rem 0.75rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .stat-blue {
+            background: #eff6ff;
+        }
+
+        .stat-green {
+            background: #f0fdf4;
+        }
+
+        .stat-purple {
+            background: #faf5ff;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #4b5563;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 1.875rem;
+            font-weight: bold;
+        }
+
+        .stat-blue .stat-value {
+            color: #2563eb;
+        }
+
+        .stat-green .stat-value {
+            color: #16a34a;
+        }
+
+        .stat-purple .stat-value {
+            color: #9333ea;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-actions h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .entry-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .entry-item {
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            transition: all 0.2s;
+        }
+
+        .entry-item.holiday {
+            border-color: #facc15;
+            background: #fefce8;
+        }
+
+        .entry-item.sunday {
+            border-color: #fca5a5;
+            background: #fef2f2;
+        }
+
+        .entry-item.saturday {
+            border-color: #93c5fd;
+            background: #eff6ff;
+        }
+
+        .entry-item.custom {
+            border-color: #fb923c;
+            background: #fff7ed;
+        }
+
+        .entry-item.holiday:hover,
+        .entry-item.sunday:hover,
+        .entry-item.saturday:hover,
+        .entry-item.custom:hover {
+            border-color: #9333ea;
+        }
+
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .entry-date {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .entry-date .badge {
+            font-size: 0.75rem;
+            background: #fef08a;
+            color: #713f12;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: normal;
+        }
+
+        .entry-date .badge-custom {
+            background: #fed7aa;
+            color: #7c2d12;
+        }
+
+        .entry-times {
+            font-size: 0.875rem;
+            color: #4b5563;
+            margin-top: 0.5rem;
+        }
+
+        .time-badge {
+            display: inline-block;
+            background: #f3e8ff;
+            color: #6b21a8;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .entry-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .mass-count {
+            text-align: right;
+            margin-right: 0.5rem;
+        }
+
+        .mass-count-label {
+            font-size: 0.75rem;
+            color: #4b5563;
+        }
+
+        .mass-count-value {
+            font-weight: bold;
+            color: #1f2937;
+            font-size: 1.125rem;
+        }
+
+        .entry-action-btn {
+            padding: 0.5rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 0.25rem;
+        }
+
+        .entry-action-btn.edit {
+            color: #2563eb;
+        }
+
+        .entry-action-btn.edit:hover {
+            background: #dbeafe;
+        }
+
+        .entry-action-btn.delete {
+            color: #dc2626;
+        }
+
+        .entry-action-btn.delete:hover {
+            background: #fee2e2;
+        }
+
+        .entry-edit-mode {
+            background: #fafafa;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .entry-edit-mode input {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .entry-edit-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .entry-edit-buttons button {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #9ca3af;
+        }
+
+        .custom-entry-form {
+            background: #fff7ed;
+            border: 2px solid #fb923c;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .custom-entry-form h3 {
+            color: #7c2d12;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .custom-entry-inputs {
+            display: grid;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .offline-indicator {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: #ef4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .offline-indicator.show {
+            display: flex;
+        }
+
+        .online-indicator {
+            background: #16a34a;
+        }
+
+        @media (max-width: 768px) {
+            .header-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .action-buttons {
+                width: 100%;
+            }
+
+            .action-buttons button {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .entry-header {
+                flex-direction: column;
+            }
+
+            .entry-actions {
+                margin-top: 1rem;
+            }
+
+            .install-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Wskaźnik offline/online -->
+    <div id="offlineIndicator" class="offline-indicator">
+        <span>●</span>
+        <span id="connectionStatus">Brak połączenia</span>
+    </div>
+
+    <div class="container">
+        <!-- Banner instalacji PWA -->
+        <div id="installBanner" class="install-banner">
+            <div class="install-banner-text">
+                <div class="install-banner-title">📱 Zainstaluj aplikację</div>
+                <div class="install-banner-desc">Dodaj do ekranu głównego i pracuj offline</div>
+            </div>
+            <div class="btn-group">
+                <button class="btn-white" onclick="installPWA()">Zainstaluj</button>
+                <button class="btn-white" onclick="dismissInstallBanner()" style="padding: 0.75rem;">✕</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h1>📅 Rejestr Zagranych Mszy</h1>
+            <p class="subtitle">Kalendarz i rozliczenie zagranych mszy</p>
+
+            <div class="form-group">
+                <label for="massRate">💰 Wynagrodzenie za mszę (zł)</label>
+                <input type="number" id="massRate" value="50" min="0" step="0.01">
+            </div>
+
+            <button class="btn-blue" onclick="toggleSettings()">
+                ⚙️ <span id="settingsToggleText">Ustaw domyślne godziny mszy</span>
+            </button>
+
+            <div id="settingsPanel" class="settings-panel" style="display: none;">
+                <h3 style="margin-bottom: 1rem; font-weight: 600; color: #1f2937;">Domyślne godziny mszy</h3>
+
+                <div class="settings-section">
+                    <label>Dni powszednie (pon-pt)</label>
+                    <div id="weekdayTimes"></div>
+                    <button class="btn-green btn-small" onclick="addDefaultTime('weekday')">
+                        ➕ Dodaj godzinę
+                    </button>
+                </div>
+
+                <div class="settings-section">
+                    <label>Sobota</label>
+                    <div id="saturdayTimes"></div>
+                    <button class="btn-green btn-small" onclick="addDefaultTime('saturday')">
+                        ➕ Dodaj godzinę
+                    </button>
+                </div>
+
+                <div class="settings-section">
+                    <label>Niedziela</label>
+                    <div id="sundayTimes"></div>
+                    <button class="btn-green btn-small" onclick="addDefaultTime('sunday')">
+                        ➕ Dodaj godzinę
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="header-actions">
+                <h2>Kalendarz mszy</h2>
+                <div class="action-buttons">
+                    <button class="btn-purple" onclick="generateMonthEntries()">
+                        📅 Wygeneruj miesiąc
+                    </button>
+                    <button class="btn-orange" onclick="toggleCustomEntry()">
+                        ➕ Dodaj niestandardowy
+                    </button>
+                    <button class="btn-green" onclick="exportReport()">
+                        ⬇️ Eksportuj
+                    </button>
+                </div>
+            </div>
+
+            <input type="month" id="monthSelector" style="margin-bottom: 1rem;">
+
+            <div id="customEntryForm" class="custom-entry-form" style="display: none;">
+                <h3>➕ Dodaj niestandardową mszę</h3>
+                <div class="custom-entry-inputs">
+                    <div>
+                        <label for="customDate">Data</label>
+                        <input type="date" id="customDate">
+                    </div>
+                    <div>
+                        <label for="customTime">Godzina</label>
+                        <input type="time" id="customTime">
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn-green" onclick="addCustomEntry()">✓ Dodaj</button>
+                    <button class="btn-gray" onclick="toggleCustomEntry()">✕ Anuluj</button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card stat-blue">
+                    <div class="stat-label">Zagrane msze</div>
+                    <div class="stat-value" id="totalMasses">0</div>
+                </div>
+                <div class="stat-card stat-green">
+                    <div class="stat-label">Wynagrodzenie</div>
+                    <div class="stat-value" id="totalEarnings">0,00 zł</div>
+                </div>
+                <div class="stat-card stat-purple">
+                    <div class="stat-label">Dni z mszami</div>
+                    <div class="stat-value" id="totalDays">0</div>
+                </div>
+            </div>
+
+            <div class="entry-list" id="entriesList"></div>
+            <div class="empty-state" id="emptyState">
+                Brak wpisów w wybranym miesiącu. Kliknij "Wygeneruj miesiąc" aby utworzyć kalendarz.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============ PWA INSTALLATION ============
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBanner').classList.add('show');
+        });
+
+        async function installPWA() {
+            if (!deferredPrompt) {
+                alert('Aplikacja jest już zainstalowana lub przeglądarka nie obsługuje instalacji.');
+                return;
+            }
+
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('PWA zainstalowana');
+            }
+            
+            deferredPrompt = null;
+            document.getElementById('installBanner').classList.remove('show');
+        }
+
+        function dismissInstallBanner() {
+            document.getElementById('installBanner').classList.remove('show');
+            localStorage.setItem('installBannerDismissed', 'true');
+        }
+
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA została zainstalowana');
+            document.getElementById('installBanner').classList.remove('show');
+        });
+
+        // ============ SERVICE WORKER REGISTRATION ============
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(reg => console.log('Service Worker zarejestrowany:', reg.scope))
+                    .catch(err => console.log('Błąd rejestracji Service Worker:', err));
+            });
+        }
+
+        // ============ OFFLINE/ONLINE DETECTION ============
+        function updateOnlineStatus() {
+            const indicator = document.getElementById('offlineIndicator');
+            const status = document.getElementById('connectionStatus');
+            
+            if (navigator.onLine) {
+                indicator.classList.add('online-indicator');
+                indicator.classList.remove('show');
+                status.textContent = 'Online';
+            } else {
+                indicator.classList.remove('online-indicator');
+                indicator.classList.add('show');
+                status.textContent = 'Tryb offline';
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        window.addEventListener('load', updateOnlineStatus);
+
+        // ============ KONFIGURACJA I INICJALIZACJA ============
+        let entries = [];
+        let defaultTimes = {
+            weekday: [],
+            saturday: ['12:00', '17:30'],
+            sunday: ['07:00', '09:30', '12:00', '17:30']
+        };
+        let editingId = null;
+
+        function initApp() {
+            loadData();
+            renderSettings();
+            setCurrentMonth();
+            updateReport();
+            
+            if (localStorage.getItem('installBannerDismissed') === 'true') {
+                document.getElementById('installBanner').classList.remove('show');
+            }
+        }
+
+        function setCurrentMonth() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            document.getElementById('monthSelector').value = `${year}-${month}`;
+            updateReport();
+        }
+
+        // ============ PRZECHOWYWANIE DANYCH ============
+        function loadData() {
+            try {
+                const saved = localStorage.getItem('massEntries');
+                const savedRate = localStorage.getItem('massRate');
+                const savedDefaults = localStorage.getItem('defaultMassTimes');
+
+                if (saved) entries = JSON.parse(saved);
+                if (savedRate) document.getElementById('massRate').value = parseFloat(savedRate);
+                if (savedDefaults) defaultTimes = JSON.parse(savedDefaults);
+            } catch (e) {
+                console.error('Błąd wczytywania danych:', e);
+            }
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem('massEntries', JSON.stringify(entries));
+                localStorage.setItem('massRate', document.getElementById('massRate').value);
+                localStorage.setItem('defaultMassTimes', JSON.stringify(defaultTimes));
+            } catch (e) {
+                console.error('Błąd zapisywania danych:', e);
+            }
+        }
+
+        function clearAllData() {
+            try {
+                localStorage.removeItem('massEntries');
+                localStorage.removeItem('massRate');
+                localStorage.removeItem('defaultMassTimes');
+                entries = [];
+            } catch (e) {
+                console.error('Błąd czyszczenia danych:', e);
+            }
+        }
+
+        // ============ OBLICZENIA ŚWIĄT ============
+        function calculateEaster(year) {
+            const a = year % 19;
+            const b = Math.floor(year / 100);
+            const c = year % 100;
+            const d = Math.floor(b / 4);
+            const e = b % 4;
+            const f = Math.floor((b + 8) / 25);
+            const g = Math.floor((b - f + 1) / 3);
+            const h = (19 * a + b - d - g + 15) % 30;
+            const i = Math.floor(c / 4);
+            const k = c % 4;
+            const l = (32 + 2 * e + 2 * i - h - k) % 7;
+            const m = Math.floor((a + 11 * h + 22 * l) / 451);
+            const month = Math.floor((h + l - 7 * m + 114) / 31);
+            const day = ((h + l - 7 * m + 114) % 31) + 1;
+            return new Date(year, month - 1, day);
+        }
+
+        function isHoliday(dateStr) {
+            const date = new Date(dateStr + 'T12:00:00');
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+
+            const fixedHolidays = [
+                { month: 1, day: 1 },
+                { month: 1, day: 6 },
+                { month: 5, day: 3 },
+                { month: 8, day: 15 },
+                { month: 11, day: 1 },
+                { month: 11, day: 11 },
+                { month: 12, day: 25 },
+                { month: 12, day: 26 }
+            ];
+
+            if (fixedHolidays.some(h => h.month === month && h.day === day)) {
+                return true;
+            }
+
+            const easter = calculateEaster(year);
+            const easterTime = easter.getTime();
+            const currentTime = date.getTime();
+            const dayDiff = Math.round((currentTime - easterTime) / (1000 * 60 * 60 * 24));
+
+            if (dayDiff === 0 || dayDiff === 1 || dayDiff === 39 || dayDiff === 49 || dayDiff === 50 || dayDiff === 60) {
+                return true;
+            }
+
+            return false;
+        }
+
+        function getDayType(dateStr) {
+            if (isHoliday(dateStr)) return 'sunday';
+            const date = new Date(dateStr + 'T12:00:00');
+            const day = date.getDay();
+            if (day === 0) return 'sunday';
+            if (day === 6) return 'saturday';
+            return 'weekday';
+        }
+
+        // ============ USTAWIENIA DOMYŚLNYCH GODZIN ============
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            const isVisible = panel.style.display !== 'none';
+            panel.style.display = isVisible ? 'none' : 'block';
+            document.getElementById('settingsToggleText').textContent = 
+                isVisible ? 'Ustaw domyślne godziny mszy' : 'Ukryj ustawienia godzin';
+        }
+
+        function renderSettings() {
+            ['weekday', 'saturday', 'sunday'].forEach(dayType => {
+                const container = document.getElementById(dayType + 'Times');
+                container.innerHTML = '';
+                defaultTimes[dayType].forEach((time, index) => {
+                    const group = document.createElement('div');
+                    group.className = 'time-input-group';
+                    group.innerHTML = `
+                        <input type="time" value="${time}" 
+                            onchange="updateDefaultTime('${dayType}', ${index}, this.value)">
+                        <button class="btn-red" 
+                            onclick="removeDefaultTime('${dayType}', ${index})">
+                            ❌
+                        </button>
+                    `;
+                    container.appendChild(group);
+                });
+            });
+        }
+
+        function updateDefaultTime(dayType, index, value) {
+            defaultTimes[dayType][index] = value;
+            saveData();
+        }
+
+        function addDefaultTime(dayType) {
+            defaultTimes[dayType].push('');
+            renderSettings();
+            saveData();
+        }
+
+        function removeDefaultTime(dayType, index) {
+            if (confirm('Czy na pewno chcesz usunąć tę godzinę mszy?')) {
+                defaultTimes[dayType].splice(index, 1);
+                if (defaultTimes[dayType].length === 0) {
+                    defaultTimes[dayType] = [''];
+                }
+                renderSettings();
+                saveData();
+            }
+        }
+
+        // ============ ZARZĄDZANIE WPISAMI NIESTANDARDOWYMI ============
+        function toggleCustomEntry() {
+            const form = document.getElementById('customEntryForm');
+            const isVisible = form.style.display !== 'none';
+            form.style.display = isVisible ? 'none' : 'block';
+            
+            if (!isVisible) {
+                const monthStr = document.getElementById('monthSelector').value;
+                const [year, month] = monthStr.split('-');
+                document.getElementById('customDate').value = `${year}-${month}-01`;
+                document.getElementById('customTime').value = '';
+            }
+        }
+
+        function addCustomEntry() {
+            const dateInput = document.getElementById('customDate').value;
+            const timeInput = document.getElementById('customTime').value;
+
+            if (!dateInput || !timeInput) {
+                alert('Proszę wypełnić datę i godzinę');
+                return;
+            }
+
+            const existingEntry = entries.find(e => e.date === dateInput);
+
+            if (existingEntry) {
+                if (!existingEntry.times.includes(timeInput)) {
+                    existingEntry.times.push(timeInput);
+                    existingEntry.times.sort();
+                    existingEntry.masses = existingEntry.times.filter(t => t && t.trim() !== '').length;
+                    if (!existingEntry.isCustom) {
+                        existingEntry.isCustom = false;
+                    }
+                }
+            } else {
+                entries.push({
+                    id: Date.now(),
+                    date: dateInput,
+                    times: [timeInput],
+                    masses: 1,
+                    isCustom: true
+                });
+            }
+
+            entries.sort((a, b) => a.date.localeCompare(b.date));
+            saveData();
+            toggleCustomEntry();
+            updateReport();
+        }
+
+        // ============ ZARZĄDZANIE WPISAMI ============
+        async function generateMonthEntries() {
+            if (!confirm('Czy wygenerować kalendarz dla wybranego miesiąca? Wszystkie poprzednie dane zostaną usunięte.')) {
+                return;
+            }
+
+            clearAllData();
+            
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            loadData();
+
+            const monthStr = document.getElementById('monthSelector').value;
+            const [year, month] = monthStr.split('-').map(Number);
+            const daysInMonth = new Date(year, month, 0).getDate();
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayType = getDayType(dateStr);
+                const times = defaultTimes[dayType].filter(t => t && t.trim() !== '');
+
+                if (times.length > 0) {
+                    entries.push({
+                        id: Date.now() + day,
+                        date: dateStr,
+                        times: times,
+                        masses: times.length,
+                        isCustom: false
+                    });
+                }
+            }
+
+            entries.sort((a, b) => a.date.localeCompare(b.date));
+            saveData();
+            updateReport();
+        }
+
+        function updateReport() {
+            const monthStr = document.getElementById('monthSelector').value;
+            const monthEntries = entries.filter(e => e.date.startsWith(monthStr));
+            const massRate = parseFloat(document.getElementById('massRate').value) || 0;
+            
+            let totalMasses = 0;
+            monthEntries.forEach(entry => {
+                entry.times.forEach(time => {
+                    if (time && time.trim() !== '') {
+                        totalMasses++;
+                    }
+                });
+            });
+            
+            const totalEarnings = totalMasses * massRate;
+            const daysWithMasses = monthEntries.filter(e => e.times.some(t => t && t.trim() !== '')).length;
+
+            document.getElementById('totalMasses').textContent = totalMasses;
+            document.getElementById('totalEarnings').textContent = totalEarnings.toFixed(2) + ' zł';
+            document.getElementById('totalDays').textContent = daysWithMasses;
+
+            renderEntries(monthEntries);
+        }
+
+        function renderEntries(monthEntries) {
+            const list = document.getElementById('entriesList');
+            const empty = document.getElementById('emptyState');
+
+            const entriesWithMasses = monthEntries.filter(e => e.times.some(t => t && t.trim() !== ''));
+
+            if (entriesWithMasses.length === 0) {
+                list.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            list.innerHTML = entriesWithMasses.sort((a, b) => a.date.localeCompare(b.date))
+                .map(entry => createEntryHTML(entry))
+                .join('');
+        }
+
+        function createEntryHTML(entry) {
+            const date = new Date(entry.date + 'T12:00:00');
+            const dayOfWeek = date.getDay();
+            const isSunday = dayOfWeek === 0;
+            const isSaturday = dayOfWeek === 6;
+            const isHolidayDay = isHoliday(entry.date);
+
+            let cssClass = 'entry-item';
+            let badgeHTML = '';
+            
+            if (entry.isCustom) {
+                cssClass += ' custom';
+                badgeHTML = '<span class="badge badge-custom">Niestandardowy</span>';
+            } else if (isHolidayDay && !isSunday) {
+                cssClass += ' holiday';
+                badgeHTML = '<span class="badge">Święto</span>';
+            } else if (isSunday) {
+                cssClass += ' sunday';
+            } else if (isSaturday) {
+                cssClass += ' saturday';
+            }
+
+            const dateStr = date.toLocaleDateString('pl-PL', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            const validTimes = entry.times.filter(t => t && t.trim() !== '');
+            const timesHTML = validTimes
+                .map(time => `<span class="time-badge">${time}</span>`)
+                .join('');
+
+            const isEditing = editingId === entry.id;
+
+            if (isEditing) {
+                return `
+                    <div class="${cssClass}">
+                        <div style="margin-bottom: 1rem;">
+                            <div class="entry-date">${dateStr} ${badgeHTML}</div>
+                            <div id="editTimes_${entry.id}"></div>
+                            <button class="btn-green" onclick="addEditingTime(${entry.id})">
+                                ➕ Dodaj mszę
+                            </button>
+                        </div>
+                        <div class="entry-edit-buttons">
+                            <button class="btn-blue" onclick="saveEdit(${entry.id})">✓ Zapisz</button>
+                            <button class="btn-gray" onclick="cancelEdit()">✕ Anuluj</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="${cssClass}">
+                    <div class="entry-header">
+                        <div style="flex: 1;">
+                            <div class="entry-date">
+                                ${dateStr}
+                                ${badgeHTML}
+                            </div>
+                            <div class="entry-times">${timesHTML}</div>
+                        </div>
+                        <div class="entry-actions">
+                            <div class="mass-count">
+                                <div class="mass-count-label">Msze</div>
+                                <div class="mass-count-value">${validTimes.length}</div>
+                            </div>
+                            <button class="entry-action-btn edit" onclick="startEdit(${entry.id})">✏️</button>
+                            <button class="entry-action-btn delete" onclick="deleteEntry(${entry.id})">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function startEdit(id) {
+            editingId = id;
+            const entry = entries.find(e => e.id === id);
+            renderEntries(getMonthEntries());
+
+            setTimeout(() => {
+                const container = document.getElementById(`editTimes_${id}`);
+                entry.times.forEach((time, index) => {
+                    const group = document.createElement('div');
+                    group.className = 'time-input-group';
+                    group.innerHTML = `
+                        <input type="time" value="${time}" id="time_${id}_${index}">
+                        ${entry.times.length > 1 ? `
+                            <button class="btn-red" onclick="removeEditingTime(${id}, ${index})">❌</button>
+                        ` : ''}
+                    `;
+                    container.appendChild(group);
+                });
+            }, 0);
+        }
+
+        function addEditingTime(id) {
+            const entry = entries.find(e => e.id === id);
+            entry.times.push('');
+            renderEntries(getMonthEntries());
+            startEdit(id);
+        }
+
+        function removeEditingTime(id, index) {
+            const entry = entries.find(e => e.id === id);
+            entry.times.splice(index, 1);
+            if (entry.times.length === 0) entry.times = [''];
+            renderEntries(getMonthEntries());
+            startEdit(id);
+        }
+
+        function saveEdit(id) {
+            const entry = entries.find(e => e.id === id);
+            entry.times = Array.from(document.querySelectorAll(`#editTimes_${id} input[type="time"]`))
+                .map(input => input.value)
+                .filter(t => t && t.trim() !== '');
+            entry.masses = entry.times.length;
+            editingId = null;
+            saveData();
+            updateReport();
+        }
+
+        function cancelEdit() {
+            editingId = null;
+            updateReport();
+        }
+
+        function deleteEntry(id) {
+            if (confirm('Czy na pewno chcesz usunąć ten wpis?')) {
+                entries = entries.filter(e => e.id !== id);
+                saveData();
+                updateReport();
+            }
+        }
+
+        function getMonthEntries() {
+            const monthStr = document.getElementById('monthSelector').value;
+            return entries.filter(e => e.date.startsWith(monthStr));
+        }
+
+        // ============ EKSPORT ============
+        function exportReport() {
+            const monthStr = document.getElementById('monthSelector').value;
+            const monthEntries = entries.filter(e => e.date.startsWith(monthStr));
+            const massRate = parseFloat(document.getElementById('massRate').value) || 0;
+            
+            let totalMasses = 0;
+            const entriesWithMasses = monthEntries.filter(e => e.times.some(t => t && t.trim() !== ''));
+            
+            entriesWithMasses.forEach(entry => {
+                entry.times.forEach(time => {
+                    if (time && time.trim() !== '') {
+                        totalMasses++;
+                    }
+                });
+            });
+            
+            const totalEarnings = totalMasses * massRate;
+
+            let report = `REJESTR MSZY - ${monthStr}\n`;
+            report += `Stawka: ${massRate} zl\n\n`;
+
+            entriesWithMasses.sort((a, b) => a.date.localeCompare(b.date)).forEach(entry => {
+                const date = new Date(entry.date + 'T12:00:00');
+                const day = date.toLocaleDateString('pl-PL', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long'
+                });
+                const validTimes = entry.times.filter(t => t && t.trim() !== '');
+                if (validTimes.length > 0) {
+                    const customMarker = entry.isCustom ? ' [NIESTANDARDOWY]' : '';
+                    report += `${day}${customMarker}: ${validTimes.join(', ')} (${validTimes.length})\n`;
+                }
+            });
+
+            report += `\n--- PODSUMOWANIE ---\n`;
+            report += `Laczna liczba mszy: ${totalMasses}\n`;
+            report += `Laczne wynagrodzenie: ${totalEarnings.toFixed(2)} zl\n`;
+            report += `Dni z mszami: ${entriesWithMasses.length}\n`;
+
+            const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `rejestr-mszy-${monthStr}.txt`;
+            link.click();
+        }
+
+        // ============ NASŁUCHIWANIE ZMIAN ============
+        document.getElementById('massRate').addEventListener('change', () => {
+            saveData();
+            updateReport();
+        });
+
+        document.getElementById('monthSelector').addEventListener('change', () => {
+            updateReport();
+        });
+
+        // ============ INICJALIZACJA ============
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>                
+
+            
