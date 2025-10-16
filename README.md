@@ -167,12 +167,12 @@ Ten projekt jest udostępniony na licencji MIT - szczegóły w pliku [LICENSE](L
 ## Autor
 
 Igor Zagórski
-Projekt stworzony jako narzędzie wspierające pracę duszpasterską.
 
 ## Podziękowania
 
 Dziękujemy wszystkim użytkownikom za feedback i sugestie!
 ```
+
 
 
 
