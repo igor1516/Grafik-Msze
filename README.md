@@ -1,4 +1,4 @@
-# Rejestr Zagranych Mszy
+# Grafik Mszy
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -41,7 +41,7 @@ Aplikacja webowa do generowania dziennika pracy organisty. Działa jako **Progre
 #### Desktop (Chrome/Edge)
 1. Otwórz aplikację w przeglądarce
 2. Kliknij ikonę instalacji (⊕) w pasku adresu
-3. LUB: Menu (⋮) → "Zainstaluj Rejestr Mszy"
+3. LUB: Menu (⋮) → "Zainstaluj Grafik Mszy"
 
 ### Metoda 2: Hosting własny
 
@@ -172,6 +172,7 @@ Igor Zagórski
 
 Dziękujemy wszystkim użytkownikom za feedback i sugestie!
 ```
+
 
 
 
