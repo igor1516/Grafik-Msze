@@ -861,6 +861,8 @@
             const currentTime = date.getTime();
             const dayDiff = Math.round((currentTime - easterTime) / (1000 * 60 * 60 * 24));
 
+            // Święta ruchome: Niedziela Wielkanocna (0), Poniedziałek Wielkanocny (1), 
+            // Wniebowstąpienie (39), Zielone Świątki (49), Poniedziałek Zielonych Świątek (50), Boże Ciało (60)
             if (dayDiff === 0 || dayDiff === 1 || dayDiff === 39 || dayDiff === 49 || dayDiff === 50 || dayDiff === 60) {
                 return true;
             }
