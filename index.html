@@ -843,13 +843,13 @@
             const day = date.getUTCDate();
 
             const fixedHolidays = [
-                { month: 1, day: 1 }, // Nowy Rok
-                { month: 1, day: 6 }, // Trzech Króli
-                { month: 5, day: 3 }, // Najświętszej Maryi Panny Królowej Polski
-                { month: 8, day: 15 }, // Wniebowzięcie NMP
-                { month: 11, day: 1 }, // Wszystkich Świętych
+                { month: 1, day: 1 },   // Nowy Rok
+                { month: 1, day: 6 },   // Trzech Króli
+                { month: 5, day: 3 },   // Najświętszej Maryi Panny Królowej Polski
+                { month: 8, day: 15 },  // Wniebowzięcie NMP
+                { month: 11, day: 1 },  // Wszystkich Świętych
                 { month: 12, day: 25 }, // Boże Narodzenie
-                { month: 12, day: 26 } // Drugi Dzień Bożego Narodzenia
+                { month: 12, day: 26 }  // Drugi Dzień Bożego Narodzenia
             ];
 
             if (fixedHolidays.some(h => h.month === month && h.day === day)) {
@@ -862,12 +862,8 @@
             
             const dayDiff = Math.floor((currentDate - easterDate) / (1000 * 60 * 60 * 24));
 
-            // Święta ruchome względem Wielkanocy:
-            // 0 = Niedziela Wielkanocna
-            // 1 = Poniedziałek Wielkanocny
-            // 39 = Wniebowstąpienie
-            // 49 = Zielone Świątki
-            // 60 = Boże Ciało
+            // Święta ruchome: Niedziela Wielkanocna (0), Poniedziałek Wielkanocny (1), 
+            // Wniebowstąpienie (39), Zielone Świątki (49), Boże Ciało (60)
             if (dayDiff === 0 || dayDiff === 1 || dayDiff === 39 || dayDiff === 49 || dayDiff === 60) {
                 return true;
             }
