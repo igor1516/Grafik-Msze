@@ -859,7 +859,7 @@
             const easter = calculateEaster(year);
             const easterTime = easter.getTime();
             const currentTime = date.getTime();
-            const dayDiff = Math.round((currentTime - easterTime) / (1000 * 60 * 60 * 24));
+            const dayDiff = Math.floor((currentTime - easterTime) / (1000 * 60 * 60 * 24));
 
             // DEBUG
             if (dateStr === '2025-06-07') {
