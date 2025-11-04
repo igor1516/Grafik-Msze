@@ -831,39 +831,47 @@
             const k = c % 4;
             const l = (32 + 2 * e + 2 * i - h - k) % 7;
             const m = Math.floor((a + 11 * h + 22 * l) / 451);
-            const month = Math.floor((h + l - 7 * m + 114) / 31);
+            const month = Math.floor((h + l - 7 * m + 114) / 31); // 3=Mar, 4=Apr
             const day = ((h + l - 7 * m + 114) % 31) + 1;
+            // zwróć Date w lokalnej strefie, na godzinę 00:00
             return new Date(year, month - 1, day);
         }
 
         function isHoliday(dateStr) {
-            const date = new Date(dateStr + 'T00:00:00Z');
-            const year = date.getUTCFullYear();
-            const month = date.getUTCMonth() + 1;
-            const day = date.getUTCDate();
+            // parsuj 'YYYY-MM-DD' bez dodawania czasu
+            const [y, m, d] = dateStr.split('-').map(Number);
+              // reprezentacja w UTC dla porównań datowych (tylko dzień, bez czasu)
+            const dateUTC = Date.UTC(y, m - 1, d);
 
+            // stałe święta (dzień i miesiąc)
             const fixedHolidays = [
                 { month: 1, day: 1 },   // Nowy Rok
                 { month: 1, day: 6 },   // Trzech Króli
-                { month: 5, day: 3 },   // Najświętszej Maryi Panny Królowej Polski
+                { month: 5, day: 3 },   // Święto Konstytucji 3 maja
                 { month: 8, day: 15 },  // Wniebowzięcie NMP
                 { month: 11, day: 1 },  // Wszystkich Świętych
                 { month: 12, day: 25 }, // Boże Narodzenie
                 { month: 12, day: 26 }  // Drugi Dzień Bożego Narodzenia
             ];
 
-            if (fixedHolidays.some(h => h.month === month && h.day === day)) {
+            if (fixedHolidays.some(h => h.month === m && h.day === d)) {
                 return true;
             }
 
-            const easter = calculateEaster(year);
-            const easterDate = new Date(easter.getUTCFullYear(), easter.getUTCMonth(), easter.getUTCDate());
-            const currentDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-            
-            const dayDiff = Math.floor((currentDate - easterDate) / (1000 * 60 * 60 * 24));
+            // oblicz Wielkanoc jako data lokalna, potem weź UTC tej daty
+            const easter = calculateEaster(y);
+            const easterUTC = Date.UTC(easter.getFullYear(), easter.getMonth(), easter.getDate());
 
-            // Święta ruchome: Niedziela Wielkanocna (0), Poniedziałek Wielkanocny (1), 
-            // Wniebowstąpienie (39), Zielone Świątki (49), Boże Ciało (60)
+            // różnica w dniach (dokładna integer różnica dni)
+            const msPerDay = 24 * 60 * 60 * 1000;
+            const dayDiff = Math.round((dateUTC - easterUTC) / msPerDay);
+
+            // Ruchome święta (liczone względem Niedzieli Wielkanocnej):
+            // 0  = Niedziela Wielkanocna
+            // 1  = Poniedziałek Wielkanocny
+            // 39 = Wniebowstąpienie (czwartek; w praktyce 39 dni po Wielkanocy)
+            // 49 = Zielone Świątki / Zesłanie Ducha Świętego (Pentecost) — 49 dni po Wielkanocy
+            // 60 = Boże Ciało (w Polsce obchodzone 60 dni po Wielkanocy)
             if (dayDiff === 0 || dayDiff === 1 || dayDiff === 39 || dayDiff === 49 || dayDiff === 60) {
                 return true;
             }
@@ -872,9 +880,14 @@
         }
 
         function getDayType(dateStr) {
+            // jeśli to jest ruchome/stale święto — traktujemy jako 'sunday' (tak jak w Twoim oryginalnym kodzie)
             if (isHoliday(dateStr)) return 'sunday';
-            const date = new Date(dateStr + 'T12:00:00');
-            const day = date.getDay();
+
+            // parser bez czasu, by uniknąć przesunięć
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const date = new Date(y, m - 1, d);
+            const day = date.getDay(); // 0 niedziela, 6 sobota
+
             if (day === 0) return 'sunday';
             if (day === 6) return 'saturday';
             return 'weekday';
