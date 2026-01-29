@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rejestr-mszy-v1';
+const CACHE_NAME = 'rejestr-mszy-v2';
 const urlsToCache = [
   '.',
   './index.html',
@@ -17,7 +17,7 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// Aktywacja Service Worker
+// Aktywacja Service Worker - automatyczne czyszczenie starego cache
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -29,6 +29,8 @@ self.addEventListener('activate', event => {
           }
         })
       );
+    }).then(() => {
+      console.log('Service Worker aktywowany, stary cache usunięty');
     })
   );
   self.clients.claim();
