@@ -354,6 +354,18 @@
             background: #fff7ed;
         }
 
+        .entry-item.dayoff {
+            border-color: #9ca3af;
+            background: #f3f4f6;
+            opacity: 0.7;
+        }
+
+        .entry-item.dayoff .entry-date,
+        .entry-item.dayoff .entry-times {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
         .entry-item.holiday:hover,
         .entry-item.sunday:hover,
         .entry-item.saturday:hover,
@@ -388,6 +400,11 @@
         .entry-date .badge-custom {
             background: #fed7aa;
             color: #7c2d12;
+        }
+
+        .entry-date .badge-dayoff {
+            background: #e5e7eb;
+            color: #374151;
         }
 
         .entry-times {
@@ -598,8 +615,21 @@
             <p class="subtitle">Dziennik pracy organisty</p>
 
             <div class="form-group">
-                <label for="massRate">Stawka za mszę (zł)</label>
-                <input type="number" id="massRate" value="50" min="0" step="0.01">
+                <label>Stawki za mszę (zł)</label>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;">
+                    <div>
+                        <label for="massRateWeekday" style="font-size: 0.75rem; font-weight: normal;">Dni powszednie</label>
+                        <input type="number" id="massRateWeekday" value="50" min="0" step="0.01">
+                    </div>
+                    <div>
+                        <label for="massRateSaturday" style="font-size: 0.75rem; font-weight: normal;">Sobota</label>
+                        <input type="number" id="massRateSaturday" value="50" min="0" step="0.01">
+                    </div>
+                    <div>
+                        <label for="massRateSunday" style="font-size: 0.75rem; font-weight: normal;">Niedziela/Święto</label>
+                        <input type="number" id="massRateSunday" value="50" min="0" step="0.01">
+                    </div>
+                </div>
             </div>
 
             <button class="btn-blue" onclick="toggleSettings()">
@@ -786,11 +816,16 @@
         function loadData() {
             try {
                 const saved = localStorage.getItem('massEntries');
-                const savedRate = localStorage.getItem('massRate');
+                const savedRates = localStorage.getItem('massRates');
                 const savedDefaults = localStorage.getItem('defaultMassTimes');
 
                 if (saved) entries = JSON.parse(saved);
-                if (savedRate) document.getElementById('massRate').value = parseFloat(savedRate);
+                if (savedRates) {
+                    const rates = JSON.parse(savedRates);
+                    document.getElementById('massRateWeekday').value = rates.weekday || 50;
+                    document.getElementById('massRateSaturday').value = rates.saturday || 50;
+                    document.getElementById('massRateSunday').value = rates.sunday || 50;
+                }
                 if (savedDefaults) defaultTimes = JSON.parse(savedDefaults);
             } catch (e) {
                 console.error('Błąd wczytywania danych:', e);
@@ -800,7 +835,12 @@
         function saveData() {
             try {
                 localStorage.setItem('massEntries', JSON.stringify(entries));
-                localStorage.setItem('massRate', document.getElementById('massRate').value);
+                const rates = {
+                    weekday: document.getElementById('massRateWeekday').value,
+                    saturday: document.getElementById('massRateSaturday').value,
+                    sunday: document.getElementById('massRateSunday').value
+                };
+                localStorage.setItem('massRates', JSON.stringify(rates));
                 localStorage.setItem('defaultMassTimes', JSON.stringify(defaultTimes));
             } catch (e) {
                 console.error('Błąd zapisywania danych:', e);
@@ -810,7 +850,7 @@
         function clearAllData() {
             try {
                 localStorage.removeItem('massEntries');
-                localStorage.removeItem('massRate');
+                localStorage.removeItem('massRates');
                 localStorage.removeItem('defaultMassTimes');
                 entries = [];
             } catch (e) {
@@ -1024,19 +1064,28 @@
         function updateReport() {
             const monthStr = document.getElementById('monthSelector').value;
             const monthEntries = entries.filter(e => e.date.startsWith(monthStr));
-            const massRate = parseFloat(document.getElementById('massRate').value) || 0;
-            
+            const rates = {
+                weekday: parseFloat(document.getElementById('massRateWeekday').value) || 0,
+                saturday: parseFloat(document.getElementById('massRateSaturday').value) || 0,
+                sunday: parseFloat(document.getElementById('massRateSunday').value) || 0
+            };
+
             let totalMasses = 0;
+            let totalEarnings = 0;
+
             monthEntries.forEach(entry => {
+                if (entry.isDayOff) return;
+                const dayType = getDayType(entry.date);
+                const rate = rates[dayType];
                 entry.times.forEach(time => {
                     if (time && time.trim() !== '') {
                         totalMasses++;
+                        totalEarnings += rate;
                     }
                 });
             });
-            
-            const totalEarnings = totalMasses * massRate;
-            const daysWithMasses = monthEntries.filter(e => e.times.some(t => t && t.trim() !== '')).length;
+
+            const daysWithMasses = monthEntries.filter(e => !e.isDayOff && e.times.some(t => t && t.trim() !== '')).length;
 
             document.getElementById('totalMasses').textContent = totalMasses;
             document.getElementById('totalEarnings').textContent = totalEarnings.toFixed(2) + ' zł';
@@ -1072,8 +1121,11 @@
 
             let cssClass = 'entry-item';
             let badgeHTML = '';
-            
-            if (entry.isCustom) {
+
+            if (entry.isDayOff) {
+                cssClass += ' dayoff';
+                badgeHTML = '<span class="badge badge-dayoff">Wolne</span>';
+            } else if (entry.isCustom) {
                 cssClass += ' custom';
                 badgeHTML = '<span class="badge badge-custom">Niestandardowy</span>';
             } else if (isHolidayDay) {
@@ -1117,6 +1169,10 @@
                 `;
             }
 
+            const dayOffBtnText = entry.isDayOff ? '✓' : '○';
+            const dayOffBtnClass = entry.isDayOff ? 'btn-green' : 'btn-gray';
+            const dayOffBtnTitle = entry.isDayOff ? 'Oznacz jako pracujący' : 'Oznacz jako wolne';
+
             return `
                 <div class="${cssClass}">
                     <div class="entry-header">
@@ -1130,8 +1186,9 @@
                         <div class="entry-actions">
                             <div class="mass-count">
                                 <div class="mass-count-label">Msze</div>
-                                <div class="mass-count-value">${validTimes.length}</div>
+                                <div class="mass-count-value">${entry.isDayOff ? '-' : validTimes.length}</div>
                             </div>
+                            <button class="entry-action-btn ${dayOffBtnClass}" onclick="toggleDayOff(${entry.id})" title="${dayOffBtnTitle}" style="font-size: 1rem;">${dayOffBtnText}</button>
                             <button class="entry-action-btn edit" onclick="startEdit(${entry.id})">✏️</button>
                             <button class="entry-action-btn delete" onclick="deleteEntry(${entry.id})">🗑️</button>
                         </div>
@@ -1200,6 +1257,15 @@
             }
         }
 
+        function toggleDayOff(id) {
+            const entry = entries.find(e => e.id === id);
+            if (entry) {
+                entry.isDayOff = !entry.isDayOff;
+                saveData();
+                updateReport();
+            }
+        }
+
         function getMonthEntries() {
             const monthStr = document.getElementById('monthSelector').value;
             return entries.filter(e => e.date.startsWith(monthStr));
@@ -1208,23 +1274,30 @@
         function exportReport() {
             const monthStr = document.getElementById('monthSelector').value;
             const monthEntries = entries.filter(e => e.date.startsWith(monthStr));
-            const massRate = parseFloat(document.getElementById('massRate').value) || 0;
-            
+            const rates = {
+                weekday: parseFloat(document.getElementById('massRateWeekday').value) || 0,
+                saturday: parseFloat(document.getElementById('massRateSaturday').value) || 0,
+                sunday: parseFloat(document.getElementById('massRateSunday').value) || 0
+            };
+
             let totalMasses = 0;
-            const entriesWithMasses = monthEntries.filter(e => e.times.some(t => t && t.trim() !== ''));
-            
+            let totalEarnings = 0;
+            const entriesWithMasses = monthEntries.filter(e => !e.isDayOff && e.times.some(t => t && t.trim() !== ''));
+            const daysOff = monthEntries.filter(e => e.isDayOff);
+
             entriesWithMasses.forEach(entry => {
+                const dayType = getDayType(entry.date);
+                const rate = rates[dayType];
                 entry.times.forEach(time => {
                     if (time && time.trim() !== '') {
                         totalMasses++;
+                        totalEarnings += rate;
                     }
                 });
             });
-            
-            const totalEarnings = totalMasses * massRate;
 
             let report = `REJESTR MSZY - ${monthStr}\n`;
-            report += `Stawka: ${massRate} zl\n\n`;
+            report += `Stawki: dni powszednie ${rates.weekday} zl, sobota ${rates.saturday} zl, niedziela/swieto ${rates.sunday} zl\n\n`;
 
             entriesWithMasses.sort((a, b) => a.date.localeCompare(b.date)).forEach(entry => {
                 const date = new Date(entry.date + 'T12:00:00');
@@ -1236,14 +1309,30 @@
                 const validTimes = entry.times.filter(t => t && t.trim() !== '');
                 if (validTimes.length > 0) {
                     const customMarker = entry.isCustom ? ' [NIESTANDARDOWY]' : '';
-                    report += `${day}${customMarker}: ${validTimes.join(', ')} (${validTimes.length})\n`;
+                    const dayType = getDayType(entry.date);
+                    const rate = rates[dayType];
+                    report += `${day}${customMarker}: ${validTimes.join(', ')} (${validTimes.length} x ${rate} zl)\n`;
                 }
             });
+
+            if (daysOff.length > 0) {
+                report += `\n--- DNI WOLNE ---\n`;
+                daysOff.sort((a, b) => a.date.localeCompare(b.date)).forEach(entry => {
+                    const date = new Date(entry.date + 'T12:00:00');
+                    const day = date.toLocaleDateString('pl-PL', {
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'long'
+                    });
+                    report += `${day}\n`;
+                });
+            }
 
             report += `\n--- PODSUMOWANIE ---\n`;
             report += `Laczna liczba mszy: ${totalMasses}\n`;
             report += `Laczne wynagrodzenie: ${totalEarnings.toFixed(2)} zl\n`;
             report += `Dni z mszami: ${entriesWithMasses.length}\n`;
+            report += `Dni wolne: ${daysOff.length}\n`;
 
             const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
             const link = document.createElement('a');
@@ -1252,9 +1341,11 @@
             link.click();
         }
 
-        document.getElementById('massRate').addEventListener('change', () => {
-            saveData();
-            updateReport();
+        ['massRateWeekday', 'massRateSaturday', 'massRateSunday'].forEach(id => {
+            document.getElementById(id).addEventListener('change', () => {
+                saveData();
+                updateReport();
+            });
         });
 
         document.getElementById('monthSelector').addEventListener('change', () => {
