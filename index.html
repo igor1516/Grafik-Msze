@@ -470,6 +470,26 @@
             background: #fee2e2;
         }
 
+        .entry-action-btn.dayoff {
+            background: #e5e7eb;
+            color: #374151;
+            border: 1px solid #9ca3af;
+        }
+
+        .entry-action-btn.dayoff:hover {
+            background: #d1d5db;
+        }
+
+        .entry-action-btn.dayoff.active {
+            background: #16a34a;
+            color: white;
+            border-color: #16a34a;
+        }
+
+        .entry-action-btn.dayoff.active:hover {
+            background: #15803d;
+        }
+
         .entry-edit-mode {
             background: #fafafa;
             padding: 1rem;
@@ -1169,8 +1189,8 @@
                 `;
             }
 
-            const dayOffBtnText = entry.isDayOff ? '✓' : '○';
-            const dayOffBtnClass = entry.isDayOff ? 'btn-green' : 'btn-gray';
+            const dayOffBtnText = entry.isDayOff ? '✓' : 'W';
+            const dayOffBtnClass = entry.isDayOff ? 'dayoff active' : 'dayoff';
             const dayOffBtnTitle = entry.isDayOff ? 'Oznacz jako pracujący' : 'Oznacz jako wolne';
 
             return `
