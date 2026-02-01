@@ -354,18 +354,6 @@
             background: #fff7ed;
         }
 
-        .entry-item.dayoff {
-            border-color: #9ca3af;
-            background: #f3f4f6;
-            opacity: 0.7;
-        }
-
-        .entry-item.dayoff .entry-date,
-        .entry-item.dayoff .entry-times {
-            text-decoration: line-through;
-            color: #9ca3af;
-        }
-
         .entry-item.holiday:hover,
         .entry-item.sunday:hover,
         .entry-item.saturday:hover,
@@ -400,11 +388,6 @@
         .entry-date .badge-custom {
             background: #fed7aa;
             color: #7c2d12;
-        }
-
-        .entry-date .badge-dayoff {
-            background: #e5e7eb;
-            color: #374151;
         }
 
         .entry-times {
@@ -663,6 +646,38 @@
                     </button>
                 </div>
             </div>
+
+            <button class="btn-blue" onclick="toggleDaysOffSettings()" style="margin-top: 0.5rem;">
+                <span id="daysOffToggleText">Ustaw dni wolne</span>
+            </button>
+
+            <div id="daysOffPanel" class="settings-panel" style="display: none;">
+                <h3 style="margin-bottom: 1rem; font-weight: 600; color: #1f2937;">Dni wolne w tygodniu</h3>
+                <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1rem;">Zaznaczone dni będą pomijane przy generowaniu miesiąca.</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="dayOff1" onchange="saveDaysOff()"> Poniedziałek
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="dayOff2" onchange="saveDaysOff()"> Wtorek
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="dayOff3" onchange="saveDaysOff()"> Środa
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="dayOff4" onchange="saveDaysOff()"> Czwartek
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="dayOff5" onchange="saveDaysOff()"> Piątek
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="dayOff6" onchange="saveDaysOff()"> Sobota
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="dayOff0" onchange="saveDaysOff()"> Niedziela
+                    </label>
+                </div>
+            </div>
         </div>
 
         <div class="card">
@@ -796,10 +811,11 @@
 
         function initApp() {
             loadData();
+            loadDaysOff();
             renderSettings();
             setCurrentMonth();
             updateReport();
-            
+
             if (localStorage.getItem('installBannerDismissed') === 'true') {
                 document.getElementById('installBanner').classList.remove('show');
             }
@@ -1039,9 +1055,18 @@
             const monthStr = document.getElementById('monthSelector').value;
             const [year, month] = monthStr.split('-').map(Number);
             const daysInMonth = new Date(year, month, 0).getDate();
+            const daysOff = getDaysOff();
 
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const date = new Date(year, month - 1, day);
+                const dayOfWeek = date.getDay();
+
+                // Pomiń dni wolne
+                if (daysOff.includes(dayOfWeek)) {
+                    continue;
+                }
+
                 const dayType = getDayType(dateStr);
                 const times = defaultTimes[dayType].filter(t => t && t.trim() !== '');
 
@@ -1074,7 +1099,6 @@
             let totalEarnings = 0;
 
             monthEntries.forEach(entry => {
-                if (entry.isDayOff) return;
                 const dayType = getDayType(entry.date);
                 const rate = rates[dayType];
                 entry.times.forEach(time => {
@@ -1085,7 +1109,7 @@
                 });
             });
 
-            const daysWithMasses = monthEntries.filter(e => !e.isDayOff && e.times.some(t => t && t.trim() !== '')).length;
+            const daysWithMasses = monthEntries.filter(e => e.times.some(t => t && t.trim() !== '')).length;
 
             document.getElementById('totalMasses').textContent = totalMasses;
             document.getElementById('totalEarnings').textContent = totalEarnings.toFixed(2) + ' zł';
@@ -1122,10 +1146,7 @@
             let cssClass = 'entry-item';
             let badgeHTML = '';
 
-            if (entry.isDayOff) {
-                cssClass += ' dayoff';
-                badgeHTML = '<span class="badge badge-dayoff">Wolne</span>';
-            } else if (entry.isCustom) {
+            if (entry.isCustom) {
                 cssClass += ' custom';
                 badgeHTML = '<span class="badge badge-custom">Niestandardowy</span>';
             } else if (isHolidayDay) {
@@ -1169,10 +1190,6 @@
                 `;
             }
 
-            const dayOffBtnText = entry.isDayOff ? '✓' : '○';
-            const dayOffBtnClass = entry.isDayOff ? 'btn-green' : 'btn-gray';
-            const dayOffBtnTitle = entry.isDayOff ? 'Oznacz jako pracujący' : 'Oznacz jako wolne';
-
             return `
                 <div class="${cssClass}">
                     <div class="entry-header">
@@ -1186,9 +1203,8 @@
                         <div class="entry-actions">
                             <div class="mass-count">
                                 <div class="mass-count-label">Msze</div>
-                                <div class="mass-count-value">${entry.isDayOff ? '-' : validTimes.length}</div>
+                                <div class="mass-count-value">${validTimes.length}</div>
                             </div>
-                            <button class="entry-action-btn ${dayOffBtnClass}" onclick="toggleDayOff(${entry.id})" title="${dayOffBtnTitle}" style="font-size: 1rem;">${dayOffBtnText}</button>
                             <button class="entry-action-btn edit" onclick="startEdit(${entry.id})">✏️</button>
                             <button class="entry-action-btn delete" onclick="deleteEntry(${entry.id})">🗑️</button>
                         </div>
@@ -1257,13 +1273,47 @@
             }
         }
 
-        function toggleDayOff(id) {
-            const entry = entries.find(e => e.id === id);
-            if (entry) {
-                entry.isDayOff = !entry.isDayOff;
-                saveData();
-                updateReport();
+        function toggleDaysOffSettings() {
+            const panel = document.getElementById('daysOffPanel');
+            const isVisible = panel.style.display !== 'none';
+            panel.style.display = isVisible ? 'none' : 'block';
+            document.getElementById('daysOffToggleText').textContent =
+                isVisible ? 'Ustaw dni wolne' : 'Ukryj dni wolne';
+        }
+
+        function saveDaysOff() {
+            const daysOff = [];
+            for (let i = 0; i <= 6; i++) {
+                if (document.getElementById('dayOff' + i).checked) {
+                    daysOff.push(i);
+                }
             }
+            localStorage.setItem('daysOff', JSON.stringify(daysOff));
+        }
+
+        function loadDaysOff() {
+            try {
+                const saved = localStorage.getItem('daysOff');
+                if (saved) {
+                    const daysOff = JSON.parse(saved);
+                    daysOff.forEach(day => {
+                        const checkbox = document.getElementById('dayOff' + day);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                }
+            } catch (e) {
+                console.error('Błąd wczytywania dni wolnych:', e);
+            }
+        }
+
+        function getDaysOff() {
+            const daysOff = [];
+            for (let i = 0; i <= 6; i++) {
+                if (document.getElementById('dayOff' + i).checked) {
+                    daysOff.push(i);
+                }
+            }
+            return daysOff;
         }
 
         function getMonthEntries() {
@@ -1282,8 +1332,7 @@
 
             let totalMasses = 0;
             let totalEarnings = 0;
-            const entriesWithMasses = monthEntries.filter(e => !e.isDayOff && e.times.some(t => t && t.trim() !== ''));
-            const daysOff = monthEntries.filter(e => e.isDayOff);
+            const entriesWithMasses = monthEntries.filter(e => e.times.some(t => t && t.trim() !== ''));
 
             entriesWithMasses.forEach(entry => {
                 const dayType = getDayType(entry.date);
@@ -1315,24 +1364,10 @@
                 }
             });
 
-            if (daysOff.length > 0) {
-                report += `\n--- DNI WOLNE ---\n`;
-                daysOff.sort((a, b) => a.date.localeCompare(b.date)).forEach(entry => {
-                    const date = new Date(entry.date + 'T12:00:00');
-                    const day = date.toLocaleDateString('pl-PL', {
-                        weekday: 'long',
-                        day: 'numeric',
-                        month: 'long'
-                    });
-                    report += `${day}\n`;
-                });
-            }
-
             report += `\n--- PODSUMOWANIE ---\n`;
             report += `Laczna liczba mszy: ${totalMasses}\n`;
             report += `Laczne wynagrodzenie: ${totalEarnings.toFixed(2)} zl\n`;
             report += `Dni z mszami: ${entriesWithMasses.length}\n`;
-            report += `Dni wolne: ${daysOff.length}\n`;
 
             const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
             const link = document.createElement('a');
