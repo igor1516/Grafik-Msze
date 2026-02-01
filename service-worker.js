@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rejestr-mszy-v4';
+const CACHE_NAME = 'rejestr-mszy-v5';
 const urlsToCache = [
   '.',
   './index.html',
@@ -31,6 +31,12 @@ self.addEventListener('activate', event => {
       );
     }).then(() => {
       console.log('Service Worker aktywowany, stary cache usunięty');
+      // Powiadom wszystkie karty o aktualizacji
+      return self.clients.matchAll();
+    }).then(clients => {
+      clients.forEach(client => {
+        client.postMessage({ type: 'SW_UPDATED' });
+      });
     })
   );
   self.clients.claim();
