@@ -777,8 +777,20 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('service-worker.js')
-                    .then(reg => console.log('Service Worker zarejestrowany:', reg.scope))
+                    .then(reg => {
+                        console.log('Service Worker zarejestrowany:', reg.scope);
+                        // Sprawdzaj aktualizacje co 60 sekund
+                        setInterval(() => reg.update(), 60000);
+                    })
                     .catch(err => console.log('Błąd rejestracji Service Worker:', err));
+            });
+
+            // Automatyczne przeładowanie po aktualizacji SW
+            navigator.serviceWorker.addEventListener('message', event => {
+                if (event.data && event.data.type === 'SW_UPDATED') {
+                    console.log('Wykryto aktualizację, przeładowuję...');
+                    window.location.reload();
+                }
             });
         }
 
