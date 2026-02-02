@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rejestr-mszy-v5';
+const CACHE_NAME = 'rejestr-mszy-v6';
 const urlsToCache = [
   '.',
   './index.html',
