@@ -1,6 +1,6 @@
 # Grafik Mszy
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![PWA](https://img.shields.io/badge/PWA-enabled-orange.svg)
 
@@ -8,15 +8,17 @@ Aplikacja webowa do generowania dziennika pracy organisty. Działa jako **Progre
 
 ## Główne funkcje
 
-- Automatyczne generowanie kalendarza - tworzy harmonogram mszy na cały miesiąc
-- Domyślne godziny mszy - oddzielne ustawienia dla dni powszednich, sobót i niedziel
-- Rozpoznawanie świąt - automatycznie wykrywa święta kościelne (w tym ruchome święta wielkanocne)
-- Wpisy niestandardowe - możliwość dodania jednorazowych mszy w wybranym dniu
-- Edycja wpisów - zmiana godzin, dodawanie i usuwanie mszy
-- Podsumowanie miesiąca - automatyczne zliczanie mszy i generowanie statystyk
-- Eksport do pliku - generowanie raportu tekstowego z podsumowaniem
-- Praca offline - pełna funkcjonalność bez internetu po zainstalowaniu
-- Synchronizacja danych - dane zapisywane lokalnie w pamięci urządzenia
+- **Automatyczne generowanie kalendarza** - tworzy harmonogram mszy na cały miesiąc
+- **Domyślne godziny mszy** - oddzielne ustawienia dla dni powszednich, sobót i niedziel
+- **Zmienna stawka za mszę** - osobne stawki dla dni powszednich, sobót i niedziel/świąt
+- **Oznaczanie dni wolnych** - możliwość wykluczenia wybranych dni tygodnia z generowania
+- **Rozpoznawanie świąt** - automatycznie wykrywa święta kościelne (w tym ruchome święta wielkanocne)
+- **Wpisy niestandardowe** - możliwość dodania jednorazowych mszy w wybranym dniu
+- **Edycja wpisów** - zmiana godzin, dodawanie i usuwanie mszy
+- **Podsumowanie miesiąca** - automatyczne zliczanie mszy i obliczanie wynagrodzenia
+- **Eksport do pliku** - generowanie raportu tekstowego z podsumowaniem
+- **Praca offline** - pełna funkcjonalność bez internetu po zainstalowaniu
+- **Automatyczne aktualizacje** - PWA automatycznie pobiera nowe wersje
 
 ## Demo
 
@@ -90,28 +92,33 @@ php -S localhost:8000
 ## Instrukcja użytkowania
 
 ### 1. Pierwsze uruchomienie
-- Ustaw wynagrodzenie w polu "Stawka za mszę (zł)"
+- Ustaw stawki za mszę osobno dla dni powszednich, sobót i niedziel/świąt
 - Kliknij "Ustaw domyślne godziny mszy"
 - Dodaj typowe godziny mszy dla dni powszednich, sobót i niedziel
 
-### 2. Generowanie kalendarza
+### 2. Ustawianie dni wolnych
+- Kliknij "Ustaw dni wolne"
+- Zaznacz dni tygodnia, w które nie pracujesz (np. poniedziałek, wtorek)
+- Zaznaczone dni będą pomijane przy generowaniu kalendarza
+
+### 3. Generowanie kalendarza
 - Wybierz miesiąc z selektora
 - Kliknij "Wygeneruj miesiąc"
-- Aplikacja automatycznie utworzy wpisy dla wszystkich dni z mszami
+- Aplikacja automatycznie utworzy wpisy dla wszystkich dni z mszami (pomijając dni wolne)
 
-### 3. Dodawanie niestandardowych mszy
+### 4. Dodawanie niestandardowych mszy
 - Kliknij "Dodaj niestandardowy"
 - Wybierz datę i godzinę
 - Kliknij "Dodaj"
 
-### 4. Edycja wpisów
+### 5. Edycja wpisów
 - Kliknij ikonę ✏️ przy wybranym dniu
 - Zmień godziny lub dodaj nowe msze
 - Kliknij "Zapisz"
 
-### 5. Eksport danych
+### 6. Eksport danych
 - Kliknij "Eksportuj"
-- Plik tekstowy z raportem zostanie pobrany
+- Plik tekstowy z raportem zostanie pobrany (zawiera stawki dla każdego typu dnia)
 
 ## Prywatność i bezpieczeństwo
 
@@ -151,6 +158,12 @@ Znalazłeś błąd? [Utwórz issue](https://github.com/igor1516/Grafik-Msze/issu
 ### Propozycje funkcji
 Masz pomysł na nową funkcję? [Otwórz issue z tagiem "enhancement"](https://github.com/igor1516/Grafik-Msze/issues)
 
+### v1.1.0 (2025-01-29)
+1. Zmienna stawka za mszę - osobne stawki dla dni powszednich, sobót i niedziel/świąt
+2. Oznaczanie dni wolnych - możliwość wykluczenia wybranych dni tygodnia
+3. Automatyczne aktualizacje PWA - strona przeładowuje się po wykryciu nowej wersji
+4. Ulepszone SEO - meta tagi i Open Graph
+
 ### v1.0.0 (2025-01-16)
 1. Pierwsza wersja publiczna
 2. Generowanie kalendarza mszy
@@ -171,11 +184,6 @@ Igor Zagórski
 ## Podziękowania
 
 Dziękujemy wszystkim użytkownikom za feedback i sugestie!
-```
-
-
-
-
 
 
 
